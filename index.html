@@ -1,182 +1,275 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mis Recomendados de Amazon</title>
-    <style>
-        :root {
-            --fondo-gradiente: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
-            --color-amazon: #ff9900;
-            --color-amazon-hover: #e68a00;
-            --color-oscuro: #1a1a1a;
-            --color-pestaña-inactiva: rgba(255, 255, 255, 0.1);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mis Recomendados de Amazon</title>
+<style>
 
-        body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background: var(--fondo-gradiente);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            color: white;
-        }
+/* ====================================================================
+   ZONA DE DISEÑO — cambia colores, fuentes y tamaños aquí.
+   No necesitas tocar nada más abajo para cambiar el look de la página.
+   ==================================================================== */
+:root {
+  --fondo-1: #0f2027;
+  --fondo-2: #203a43;
+  --fondo-3: #2c5364;
+  --acento: #ff9900;       /* color Amazon, úsalo para botones/hover */
+  --acento-hover: #e68a00;
+  --texto-oscuro: #1a1a1a;
+  --tarjeta-fondo: #ffffff;
+  --radio-borde: 14px;
+  --fuente: 'Segoe UI', system-ui, sans-serif;
+}
 
-        .container {
-            width: 100%;
-            max-width: 480px;
-            padding: 30px 15px;
-            box-sizing: border-box;
-            text-align: center;
-        }
+* { box-sizing: border-box; }
 
-        .profile-img {
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            border: 3px solid var(--color-amazon);
-            object-fit: cover;
-        }
+body {
+  font-family: var(--fuente);
+  background: linear-gradient(135deg, var(--fondo-1) 0%, var(--fondo-2) 50%, var(--fondo-3) 100%);
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  color: white;
+}
 
-        h1 { font-size: 1.4rem; margin: 10px 0 5px 0; }
-        .subtitle { font-size: 0.9rem; opacity: 0.8; margin-bottom: 25px; }
+.container {
+  width: 100%;
+  max-width: 480px;
+  padding: 30px 15px 50px;
+}
 
-        /* --- BOTONES DE CATEGORÍAS (TABS) --- */
-        .tabs-container {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 25px;
-            flex-wrap: wrap; /* Por si pones muchas categorías, se acomodan abajo */
-        }
+.perfil { text-align: center; margin-bottom: 25px; }
 
-        .tab-button {
-            background-color: var(--color-pestaña-inactiva);
-            color: white;
-            border: 1px solid rgba(255,255,255,0.2);
-            padding: 10px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.85rem;
-            transition: all 0.3s ease;
-        }
+.profile-img {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  border: 3px solid var(--acento);
+  object-fit: cover;
+}
 
-        .tab-button.active {
-            background-color: white;
-            color: var(--color-oscuro);
-            border-color: white;
-            box-shadow: 0 4px 12px rgba(255,255,255,0.2);
-        }
+h1 { font-size: 1.4rem; margin: 10px 0 5px 0; }
+.subtitle { font-size: 0.9rem; opacity: 0.8; margin: 0; }
 
-        /* --- CONTENEDORES DE LINKS --- */
-        .links-content {
-            display: none; /* Escondidos por defecto */
-            flex-direction: column;
-            gap: 12px;
-            animation: fadeIn 0.4s ease;
-        }
+/* Pestañas de categorías */
+.tabs-container {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 25px 0;
+  flex-wrap: wrap;
+}
 
-        .links-content.active {
-            display: flex; /* Solo se muestra el activo */
-        }
+.tab-button {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 10px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all 0.25s ease;
+}
 
-        /* --- ESTILO DE CADA LINK --- */
-        .link-card {
-            background-color: rgba(255, 255, 255, 0.95);
-            color: var(--color-oscuro);
-            text-decoration: none;
-            padding: 14px 20px;
-            border-radius: 12px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            transition: transform 0.2s, box-shadow 0.2s;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
+.tab-button.active {
+  background-color: white;
+  color: var(--texto-oscuro);
+  border-color: white;
+  box-shadow: 0 4px 12px rgba(255,255,255,0.2);
+}
 
-        .link-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(255, 153, 0, 0.3);
-            background-color: #ffffff;
-        }
+.links-content {
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+  animation: fadeIn 0.35s ease;
+}
 
-        /* Flechita o icono al lado del texto */
-        .link-card::after {
-            content: '➔';
-            color: var(--color-amazon);
-            font-size: 0.9rem;
-        }
+.links-content.active { display: flex; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+/* Tarjeta de producto: imagen + texto + flecha */
+.link-card {
+  background-color: var(--tarjeta-fondo);
+  color: var(--texto-oscuro);
+  text-decoration: none;
+  padding: 10px 16px;
+  border-radius: var(--radio-borde);
+  font-size: 0.95rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
 
-        footer { margin-top: 40px; font-size: 0.75rem; opacity: 0.5; }
-    </style>
+.link-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(255, 153, 0, 0.3);
+}
+
+.link-card img.producto-img {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 10px;
+  flex-shrink: 0;
+  background: #f0f0f0;
+}
+
+.link-card .titulo {
+  flex: 1;
+  line-height: 1.3;
+}
+
+.link-card .flecha {
+  color: var(--acento);
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+footer { margin-top: 40px; font-size: 0.75rem; opacity: 0.5; text-align: center; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
 </head>
 <body>
 
-    <div class="container">
-        <img class="profile-img" src="AQUÍ_PEGA_TU_NUEVO_LINK_DIRECTO" alt="Los mejores Productos">
-        <h1>@TuUsuario</h1>
-        <p class="subtitle">📦 Presiona una categoría para ver mis recomendaciones</p>
+<div class="container">
+  <div class="perfil">
+    <img class="profile-img" id="profile-img" src="" alt="Foto de perfil">
+    <h1 id="profile-name"></h1>
+    <p class="subtitle">📦 Presiona una categoría para ver mis recomendaciones</p>
+  </div>
 
-        <div class="tabs-container">
-            <button class="tab-button active" onclick="openCategory('tecnologia')">💻 Tecnología</button>
-            <button class="tab-button" onclick="openCategory('Dia del Padre')">🏠 Dia del Padre</button>
-            <button class="tab-button" onclick="openCategory('ropa')">👕 Ropa y Más</button>
-        </div>
+  <div class="tabs-container" id="tabs-container"></div>
+  <div id="links-container"></div>
 
-        <div id="tecnologia" class="links-content active">
-            <a href="https://amzn.to/49ZAPYg" target="_blank" class="link-card">Camara Osmo Poket 3</a>
-            <a href="https://amzn.to/4vG8eiU" target="_blank" class="link-card">Micrófonos Hollyland LARK M2 Bluetooth Inalámbricos con Cancelación de Ruido en Amazon</a>
+  <footer>© 2026 | Mis Enlaces de Afiliado</footer>
+</div>
 
-            <a href="https://amzn.to/4vPOOZ7" target="_blank" class="link-card">Soporte Ajustable para Celular Statik HyperMount</a>
-            <a href="https://amzn.to/43wF222" target="_blank" class="link-card">Automatic Selfie Stick Tripod with Remote</a>
-            <a href="https://amzn.to/4a3OUE2" target="_blank" class="link-card">Samsung Galaxy Watch8 Smartwatch, 44mm</a>
-        </div>
+<script>
+/* ====================================================================
+   ZONA DE CONTENIDO — esto es lo único que necesitas editar día a día.
 
-        <div id="Dia del Padre" class="links-content">
-            <a href="https://amzn.to/4uWZsN3" target="_blank" class="link-card">Metal Detector for Adults Professional</a>
-            <a href="https://amzn.to/3S5VKTv" target="_blank" class="link-card">Our First Father's Day Dad and Baby Matching Outfits</a>
-            <a href="https://amzn.to/3S9VEdw" target="_blank" class="link-card">Smart Watch for Men Women with Bluetooth</a>
-            <a href="https://amzn.to/4ey6gdQ" target="_blank" class="link-card">12 in 1 Hammer Multitool Gifts for Men</a>
-            <a href="https://amzn.to/43Dy8Ih" target="_blank" class="link-card">Ultra-Light Injection Molded Cooler</a>
+   1) Cambia tu foto y usuario en PERFIL.
+   2) Para añadir una categoría nueva: copia un bloque { nombre, emoji,
+      productos: [...] } dentro de CATEGORIAS.
+   3) Para añadir un producto: copia una línea { titulo, link, imagen }
+      dentro de la categoría que quieras. Borra "imagen" o déjala como
+      cadena vacía "" si no tienes imagen — se mostrará un cuadro gris.
+   ==================================================================== */
 
-        </div>
+const PERFIL = {
+  nombre: "@TuUsuario",
+  foto: "AQUÍ_PEGA_TU_NUEVO_LINK_DIRECTO"
+};
 
-        <div id="ropa" class="links-content">
-            <a href="https://amzn.to/4a6BIyf" target="_blank" class="link-card">Men's Shorts Lightweight Quick Dry</a>
-            <a href="https://amzn.to/3SdDeIT" target="_blank" class="link-card">APTRO Men's Cargo Shorts Twill Relaxed Fit Multi-Pockets</a>
-        </div>
+const CATEGORIAS = [
+  {
+    nombre: "Tecnología",
+    emoji: "💻",
+    productos: [
+      { titulo: "Cámara Osmo Pocket 3", link: "https://amzn.to/49ZAPYg", imagen: "" },
+      { titulo: "Micrófonos Hollyland LARK M2 Bluetooth Inalámbricos con Cancelación de Ruido", link: "https://amzn.to/4vG8eiU", imagen: "" },
+      { titulo: "Soporte Ajustable para Celular Statik HyperMount", link: "https://amzn.to/4vPOOZ7", imagen: "" },
+      { titulo: "Automatic Selfie Stick Tripod with Remote", link: "https://amzn.to/43wF222", imagen: "" },
+      { titulo: "Samsung Galaxy Watch8 Smartwatch, 44mm", link: "https://amzn.to/4a3OUE2", imagen: "" }
+    ]
+  },
+  {
+    nombre: "Día del Padre",
+    emoji: "🏠",
+    productos: [
+      { titulo: "Metal Detector for Adults Professional", link: "https://amzn.to/4uWZsN3", imagen: "" },
+      { titulo: "Our First Father's Day Dad and Baby Matching Outfits", link: "https://amzn.to/3S5VKTv", imagen: "" },
+      { titulo: "Smart Watch for Men Women with Bluetooth", link: "https://amzn.to/3S9VEdw", imagen: "" },
+      { titulo: "12 in 1 Hammer Multitool Gifts for Men", link: "https://amzn.to/4ey6gdQ", imagen: "" },
+      { titulo: "Ultra-Light Injection Molded Cooler", link: "https://amzn.to/43Dy8Ih", imagen: "" }
+    ]
+  },
+  {
+    nombre: "Ropa y Más",
+    emoji: "👕",
+    productos: [
+      { titulo: "Men's Shorts Lightweight Quick Dry", link: "https://amzn.to/4a6BIyf", imagen: "" },
+      { titulo: "APTRO Men's Cargo Shorts Twill Relaxed Fit Multi-Pockets", link: "https://amzn.to/3SdDeIT", imagen: "" }
+    ]
+  }
+];
 
-        <footer>
-            © 2026 | Mis Enlaces de Afiliado
-        </footer>
-    </div>
+/* ====================================================================
+   MOTOR DE LA PÁGINA — no hace falta tocar esto.
+   Lee PERFIL y CATEGORIAS de arriba y construye la página automáticamente.
+   ==================================================================== */
 
-    <script>
-        function openCategory(categoryName) {
-            // Ocultar todos los bloques de links
-            const contents = document.querySelectorAll('.links-content');
-            contents.forEach(content => content.classList.remove('active'));
+document.getElementById("profile-img").src = PERFIL.foto;
+document.getElementById("profile-name").textContent = PERFIL.nombre;
 
-            // Quitar el diseño "activo" a todos los botones
-            const buttons = document.querySelectorAll('.tab-button');
-            buttons.forEach(button => button.classList.remove('active'));
+const tabsContainer = document.getElementById("tabs-container");
+const linksContainer = document.getElementById("links-container");
 
-            // Mostrar el bloque seleccionado y activar su botón
-            document.getElementById(categoryName).classList.add('active');
-            event.currentTarget.classList.add('active');
-        }
-    </script>
+CATEGORIAS.forEach((categoria, index) => {
+  const slug = "cat-" + index;
+
+  // Botón de pestaña
+  const btn = document.createElement("button");
+  btn.className = "tab-button" + (index === 0 ? " active" : "");
+  btn.textContent = `${categoria.emoji} ${categoria.nombre}`;
+  btn.addEventListener("click", () => openCategory(slug, btn));
+  tabsContainer.appendChild(btn);
+
+  // Panel de productos
+  const panel = document.createElement("div");
+  panel.id = slug;
+  panel.className = "links-content" + (index === 0 ? " active" : "");
+
+  categoria.productos.forEach(producto => {
+    const card = document.createElement("a");
+    card.href = producto.link;
+    card.target = "_blank";
+    card.rel = "noopener";
+    card.className = "link-card";
+
+    const img = document.createElement("img");
+    img.className = "producto-img";
+    img.src = producto.imagen || "https://placehold.co/100x100/eeeeee/aaaaaa?text=%20";
+    img.alt = producto.titulo;
+    img.loading = "lazy";
+    img.onerror = () => { img.src = "https://placehold.co/100x100/eeeeee/aaaaaa?text=%20"; };
+
+    const titulo = document.createElement("span");
+    titulo.className = "titulo";
+    titulo.textContent = producto.titulo;
+
+    const flecha = document.createElement("span");
+    flecha.className = "flecha";
+    flecha.textContent = "➔";
+
+    card.appendChild(img);
+    card.appendChild(titulo);
+    card.appendChild(flecha);
+    panel.appendChild(card);
+  });
+
+  linksContainer.appendChild(panel);
+});
+
+function openCategory(slug, btnEl) {
+  document.querySelectorAll(".links-content").forEach(el => el.classList.remove("active"));
+  document.querySelectorAll(".tab-button").forEach(el => el.classList.remove("active"));
+  document.getElementById(slug).classList.add("active");
+  btnEl.classList.add("active");
+}
+</script>
 
 </body>
 </html>
